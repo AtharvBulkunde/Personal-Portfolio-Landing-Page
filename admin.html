@@ -27,9 +27,36 @@
       <div class="actions"><button id="connectBtn" class="button primary">Connect securely ↗</button><button id="disconnectBtn" class="button">Disconnect</button></div>
       <p id="status" class="status" role="status" aria-live="polite">Enter your server details to load the inbox. The token stays in this tab only.</p>
     </section>
-    <section class="inbox" aria-labelledby="inbox-title">
+    <nav class="admin-tabs" aria-label="Admin sections">
+      <button id="showMessages" class="button primary" type="button">Inbox</button>
+      <button id="showProjects" class="button" type="button">Projects</button>
+    </nav>
+    <section class="inbox" id="messagesPanel" aria-labelledby="inbox-title">
       <div class="inbox-head"><div><p class="eyebrow">INBOX</p><h2 id="inbox-title">Recent messages</h2></div><button id="refreshBtn" class="button" disabled>Refresh ↻</button></div>
       <div id="messageList" class="message-list"><div class="empty panel">Inbox messages appear here after connecting.</div></div>
+    </section>
+
+    <section class="inbox" id="projectsPanel" aria-labelledby="projects-title" hidden>
+      <div class="inbox-head">
+        <div><p class="eyebrow">PROJECT CONTENT</p><h2 id="projects-title">Manage projects</h2></div>
+        <button id="reloadProjects" class="button" type="button" disabled>Refresh ↻</button>
+      </div>
+      <form id="projectForm" class="project-form panel">
+        <input type="hidden" id="projectId">
+        <h3 id="projectFormTitle">Add a project</h3>
+        <div class="form-grid">
+          <label>Project title<input id="projectTitle" required minlength="2" maxlength="120" placeholder="Project name"></label>
+          <label>URL slug<input id="projectSlug" required pattern="[a-z0-9]+(-[a-z0-9]+)*" maxlength="100" placeholder="project-name"></label>
+          <label class="full">Short summary<textarea id="projectSummary" required minlength="10" maxlength="1000" rows="3" placeholder="What does the project do?"></textarea></label>
+          <label>Technology tags (comma-separated)<input id="projectTags" required placeholder="HTML, CSS, JavaScript"></label>
+          <label>Repository URL<input id="projectRepository" type="url" required placeholder="https://github.com/..."></label>
+          <label>Live demo URL (optional)<input id="projectLiveUrl" type="url" placeholder="https://..."></label>
+          <label class="check-label"><input type="checkbox" id="projectFeatured"> Featured project</label>
+        </div>
+        <div class="actions"><button class="button primary" id="saveProject" type="submit">Save project</button><button class="button" id="cancelProjectEdit" type="button" hidden>Cancel edit</button></div>
+        <p id="projectFormStatus" class="status" role="status" aria-live="polite"></p>
+      </form>
+      <div id="projectList" class="message-list"><div class="empty panel">Connect to the API to manage projects.</div></div>
     </section>
     <footer><span>Admin access is token-protected by the API.</span><a href="index.html">← Back to portfolio</a></footer>
   </main>
