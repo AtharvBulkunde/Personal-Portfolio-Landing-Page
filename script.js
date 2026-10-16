@@ -73,7 +73,7 @@ contactForm?.addEventListener("submit", event => {
   const subject = encodeURIComponent("Portfolio contact — " + name);
   const body = encodeURIComponent("Name: " + name + "\nEmail: " + email + "\n\nMessage:\n" + message);
   if (formMessage) formMessage.textContent = "Opening your email application…";
-  window.location.href = "mailto:yourmail@example.com?subject=" + subject + "&body=" + body;
+  window.location.href = "mailto:atharv.bulkunde@example.com?subject=" + subject + "&body=" + body;
 });
 const year = document.getElementById("year");
 if (year) year.textContent = new Date().getFullYear();
