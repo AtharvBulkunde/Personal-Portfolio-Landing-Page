@@ -25,6 +25,19 @@ db.exec(`
     status TEXT NOT NULL DEFAULT 'new' CHECK(status IN ('new','read','archived')),
     created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
   );
+  CREATE TABLE IF NOT EXISTS projects (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    slug TEXT NOT NULL UNIQUE,
+    title TEXT NOT NULL,
+    summary TEXT NOT NULL,
+    tags_json TEXT NOT NULL DEFAULT '[]',
+    repository_url TEXT NOT NULL,
+    live_url TEXT,
+    featured INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')),
+    updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now'))
+  );
+`);
 `);
 
 const app = express();
@@ -46,32 +59,86 @@ app.use(cors({
 }));
 app.use(express.json({ limit: "20kb", strict: true }));
 
-const projects = [
+const initialProjects = [
   {
     slug: "personal-portfolio",
     title: "Personal Portfolio",
     summary: "An editorial portfolio with responsive layouts, motion, theme controls and a contact API.",
     tags: ["HTML", "CSS", "JavaScript", "Node.js"],
-    repository: "https://github.com/AtharvBulkunde/Personal-Portfolio-Landing-Page"
+    repository: "https://github.com/AtharvBulkunde/Personal-Portfolio-Landing-Page",
+    liveUrl: "",
+    featured: true
   },
   {
     slug: "music-ui",
     title: "Modern Music UI",
     summary: "A music interface concept focused on clear visual hierarchy and interactive presentation.",
     tags: ["HTML", "CSS", "JavaScript"],
-    repository: "https://github.com/AtharvBulkunde/Music"
+    repository: "https://github.com/AtharvBulkunde/Music",
+    liveUrl: "",
+    featured: false
   },
   {
     slug: "edutrack",
     title: "EduTrack Pro",
     summary: "A college management system repository for exploring academic data and workflows.",
     tags: ["Java", "SQL", "DBMS"],
-    repository: "https://github.com/AtharvBulkunde/EduTrack-Pro---Complete-College-Management-System"
+    repository: "https://github.com/AtharvBulkunde/EduTrack-Pro---Complete-College-Management-System",
+    liveUrl: "",
+    featured: false
   }
 ];
-
+const projectCount = db.prepare("SELECT COUNT(*) AS count FROM projects").get().count;
+if (projectCount === 0) {
+  const seedProject = db.prepare(
+    "INSERT INTO projects (slug, title, summary, tags_json, repository_url, live_url, featured) VALUES (?, ?, ?, ?, ?, ?, ?)"
+  );
+  const seedTransaction = db.transaction(items => items.forEach(item => seedProject.run(
+    item.slug, item.title, item.summary, JSON.stringify(item.tags), item.repository,
+    item.liveUrl || null, item.featured ? 1 : 0
+  )));
+  seedTransaction(initialProjects);
+}
+function serialiseProject(row) {
+  return {
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    summary: row.summary,
+    tags: JSON.parse(row.tags_json),
+    repository: row.repository_url,
+    liveUrl: row.live_url || "",
+    featured: Boolean(row.featured),
+    createdAt: row.created_at,
+    updatedAt: row.updated_at
+  };
+}
+function validateProject(body) {
+  const title = typeof body?.title === "string" ? body.title.trim() : "";
+  const slug = typeof body?.slug === "string" ? body.slug.trim().toLowerCase() : "";
+  const summary = typeof body?.summary === "string" ? body.summary.trim() : "";
+  const tags = Array.isArray(body?.tags)
+    ? body.tags.filter(tag => typeof tag === "string").map(tag => tag.trim()).filter(Boolean).slice(0, 12)
+    : [];
+  const repository = typeof body?.repository === "string" ? body.repository.trim() : "";
+  const liveUrl = typeof body?.liveUrl === "string" ? body.liveUrl.trim() : "";
+  const validHttps = value => {
+    try { return new URL(value).protocol === "https:"; } catch { return false; }
+  };
+  if (title.length < 2 || title.length > 120) return { error: "Title must be between 2 and 120 characters." };
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || slug.length > 100) return { error: "Slug must use lowercase letters, numbers and single hyphens." };
+  if (summary.length < 10 || summary.length > 1000) return { error: "Summary must be between 10 and 1,000 characters." };
+  if (!tags.length) return { error: "Add at least one technology tag." };
+  if (tags.some(tag => tag.length > 40)) return { error: "Each technology tag must be 40 characters or fewer." };
+  if (!validHttps(repository)) return { error: "Repository must be a valid HTTPS URL." };
+  if (liveUrl && !validHttps(liveUrl)) return { error: "Live demo must be a valid HTTPS URL or blank." };
+  return { project: { title, slug, summary, tags, repository, liveUrl, featured: Boolean(body.featured) } };
+}
 app.get("/api/health", (_req, res) => res.json({ ok: true, service: "portfolio-api" }));
-app.get("/api/projects", (_req, res) => res.json({ items: projects }));
+app.get("/api/projects", (_req, res) => {
+  const rows = db.prepare("SELECT * FROM projects ORDER BY featured DESC, updated_at DESC, id DESC").all();
+  return res.json({ items: rows.map(serialiseProject) });
+});
 
 const contactLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
@@ -139,6 +206,54 @@ app.patch("/api/admin/messages/:id/status", requireAdmin, (req, res) => {
   }
   const result = db.prepare("UPDATE messages SET status = ? WHERE id = ?").run(status, id);
   if (result.changes === 0) return res.status(404).json({ error: "Message not found." });
+  return res.json({ ok: true });
+});
+
+app.get("/api/admin/projects", requireAdmin, (_req, res) => {
+  const rows = db.prepare("SELECT * FROM projects ORDER BY featured DESC, updated_at DESC, id DESC").all();
+  return res.json({ items: rows.map(serialiseProject) });
+});
+
+app.post("/api/admin/projects", requireAdmin, (req, res) => {
+  const validated = validateProject(req.body);
+  if (validated.error) return res.status(400).json({ error: validated.error });
+  const p = validated.project;
+  try {
+    const result = db.prepare(
+      "INSERT INTO projects (slug, title, summary, tags_json, repository_url, live_url, featured) VALUES (?, ?, ?, ?, ?, ?, ?)"
+    ).run(p.slug, p.title, p.summary, JSON.stringify(p.tags), p.repository, p.liveUrl || null, p.featured ? 1 : 0);
+    const row = db.prepare("SELECT * FROM projects WHERE id = ?").get(Number(result.lastInsertRowid));
+    return res.status(201).json({ item: serialiseProject(row) });
+  } catch (error) {
+    if (error?.code === "SQLITE_CONSTRAINT_UNIQUE") return res.status(409).json({ error: "That project slug already exists." });
+    return res.status(500).json({ error: "Project could not be saved." });
+  }
+});
+
+app.patch("/api/admin/projects/:id", requireAdmin, (req, res) => {
+  const id = Number.parseInt(req.params.id, 10);
+  if (!Number.isSafeInteger(id) || id < 1) return res.status(400).json({ error: "Invalid project ID." });
+  const validated = validateProject(req.body);
+  if (validated.error) return res.status(400).json({ error: validated.error });
+  const p = validated.project;
+  try {
+    const result = db.prepare(
+      "UPDATE projects SET slug = ?, title = ?, summary = ?, tags_json = ?, repository_url = ?, live_url = ?, featured = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE id = ?"
+    ).run(p.slug, p.title, p.summary, JSON.stringify(p.tags), p.repository, p.liveUrl || null, p.featured ? 1 : 0, id);
+    if (result.changes === 0) return res.status(404).json({ error: "Project not found." });
+    const row = db.prepare("SELECT * FROM projects WHERE id = ?").get(id);
+    return res.json({ item: serialiseProject(row) });
+  } catch (error) {
+    if (error?.code === "SQLITE_CONSTRAINT_UNIQUE") return res.status(409).json({ error: "That project slug already exists." });
+    return res.status(500).json({ error: "Project could not be updated." });
+  }
+});
+
+app.delete("/api/admin/projects/:id", requireAdmin, (req, res) => {
+  const id = Number.parseInt(req.params.id, 10);
+  if (!Number.isSafeInteger(id) || id < 1) return res.status(400).json({ error: "Invalid project ID." });
+  const result = db.prepare("DELETE FROM projects WHERE id = ?").run(id);
+  if (result.changes === 0) return res.status(404).json({ error: "Project not found." });
   return res.json({ ok: true });
 });
 
