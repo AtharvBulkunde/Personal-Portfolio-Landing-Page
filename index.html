@@ -10,6 +10,7 @@
 
     <title>Atharv Vijay Bulkunde — Digital Portfolio</title>
     <meta name="color-scheme" content="light dark">
+    <meta name="author" content="Atharv Vijay Bulkunde">
     <meta property="og:title" content="Atharv Vijay Bulkunde — Digital Portfolio">
     <meta property="og:description" content="Computer Engineering student building thoughtful digital experiences.">
 
@@ -22,7 +23,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body data-api-base="">
 <div class="ambient ambient-one" aria-hidden="true"></div>
 <div class="ambient ambient-two" aria-hidden="true"></div>
 <div class="cursor-glow" aria-hidden="true"></div>
@@ -135,7 +136,7 @@
             <div class="social-links">
 
                 <a href="https://github.com/AtharvBulkunde"
-                   target="_blank">
+                   target="_blank" rel="noreferrer">
                     GitHub ↗
                 </a>
 
@@ -144,8 +145,8 @@
                     LinkedIn ↗
                 </a>
 
-                <a href="https://github.com/AtharvBulkunde">
-                    Email ↗
+                <a href="https://www.linkedin.com/in/atharv-bulkunde-2999012a5/" target="_blank" rel="noreferrer">
+                    Connect ↗
                 </a>
 
             </div>
@@ -176,7 +177,7 @@
                 </div>
 
                 <div class="profile-image">
-                    <img src="https://github.com/AtharvBulkunde.png" alt="Atharv Bulkunde profile image" loading="lazy">
+                    <img src="https://github.com/AtharvBulkunde.png" alt="Atharv Bulkunde profile image" loading="eager" fetchpriority="high" decoding="async">
                 </div>
 
                 <h2>
@@ -705,7 +706,7 @@
                 <div>
 
                     <small>
-                        CERTIFICATE
+                        CERTIFICATE SLOT
                     </small>
 
                     <h3>
@@ -730,7 +731,7 @@
                 <div>
 
                     <small>
-                        CERTIFICATE
+                        CERTIFICATE SLOT
                     </small>
 
                     <h3>
@@ -738,14 +739,12 @@
                     </h3>
 
                     <p>
-                        Add your certificate platform here.
+                        Add a verified certificate link when available.
                     </p>
 
                 </div>
 
-                <a href="#">
-                    ↗
-                </a>
+                <span class="certificate-pending">LINK PENDING</span>
 
             </article>
 
@@ -757,7 +756,7 @@
                 <div>
 
                     <small>
-                        CERTIFICATE
+                        CERTIFICATE SLOT
                     </small>
 
                     <h3>
@@ -765,14 +764,12 @@
                     </h3>
 
                     <p>
-                        Add your certificate platform here.
+                        Add a verified certificate link when available.
                     </p>
 
                 </div>
 
-                <a href="#">
-                    ↗
-                </a>
+                <span class="certificate-pending">LINK PENDING</span>
 
             </article>
 
@@ -850,6 +847,7 @@
                     Open to internships, collaborations,
                     projects and learning opportunities.
                 </p>
+                <p class="direct-contact">Prefer a direct message? <a href="https://www.linkedin.com/in/atharv-bulkunde-2999012a5/" target="_blank" rel="noreferrer">LinkedIn ↗</a> · <a href="https://github.com/AtharvBulkunde" target="_blank" rel="noreferrer">GitHub ↗</a></p>
 
             </div>
 
@@ -896,7 +894,7 @@
 
                 </button>
 
-                <p id="formMessage"></p>
+                <p id="formMessage" role="status" aria-live="polite"></p>
 
             </form>
 
@@ -920,12 +918,12 @@
             <a href="#home"
                class="logo">
 
-                &lt;<span>/</span>&gt; ATHARV<span>.</span>
+                A<span class="brand-dot">.</span> / ATHARV
 
             </a>
 
             <p>
-                Designed & built with HTML, CSS & JavaScript.
+                A considered portfolio for thoughtful digital work.
             </p>
 
         </div>
@@ -943,8 +941,8 @@
                 LinkedIn
             </a>
 
-            <a href="https://github.com/AtharvBulkunde">
-                Email
+            <a href="https://www.linkedin.com/in/atharv-bulkunde-2999012a5/" target="_blank" rel="noreferrer">
+                Contact
             </a>
 
         </div>
