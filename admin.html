@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="color-scheme" content="light">
+  <title>Portfolio Inbox — Admin</title>
+  <link rel="stylesheet" href="admin.css">
+  <script src="admin.js" defer></script>
+</head>
+<body>
+  <main class="admin-shell">
+    <header class="admin-heading">
+      <a class="wordmark" href="index.html">A. / ATHARV</a>
+      <span class="eyebrow">PRIVATE INBOX</span>
+    </header>
+    <section class="intro">
+      <p class="eyebrow">PORTFOLIO / ADMIN</p>
+      <h1>Messages,<br><em>with context.</em></h1>
+      <p class="muted">Connect to your own API to review and archive messages sent through the portfolio contact form.</p>
+    </section>
+    <section class="connection panel" aria-labelledby="connect-title">
+      <h2 id="connect-title">Connect to API</h2>
+      <label>API origin <input id="apiBase" type="url" placeholder="http://localhost:3000" autocomplete="url"></label>
+      <label>Admin token <input id="adminToken" type="password" placeholder="Paste ADMIN_API_TOKEN" autocomplete="off"></label>
+      <div class="actions"><button id="connectBtn" class="button primary">Connect securely ↗</button><button id="disconnectBtn" class="button">Disconnect</button></div>
+      <p id="status" class="status" role="status" aria-live="polite">Enter your server details to load the inbox. The token stays in this tab only.</p>
+    </section>
+    <section class="inbox" aria-labelledby="inbox-title">
+      <div class="inbox-head"><div><p class="eyebrow">INBOX</p><h2 id="inbox-title">Recent messages</h2></div><button id="refreshBtn" class="button" disabled>Refresh ↻</button></div>
+      <div id="messageList" class="message-list"><div class="empty panel">Inbox messages appear here after connecting.</div></div>
+    </section>
+    <footer><span>Admin access is token-protected by the API.</span><a href="index.html">← Back to portfolio</a></footer>
+  </main>
+</body>
+</html>
