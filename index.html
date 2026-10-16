@@ -3,17 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#080811">
+    <meta name="theme-color" content="#f6f6f4">
 
     <meta name="description"
           content="Atharv Vijay Bulkunde - Computer Engineering Student and Developer Portfolio">
 
-    <title>Atharv Vijay Bulkunde | Developer</title>
+    <title>Atharv Vijay Bulkunde — Digital Portfolio</title>
+    <meta name="color-scheme" content="light dark">
+    <meta property="og:title" content="Atharv Vijay Bulkunde — Digital Portfolio">
+    <meta property="og:description" content="Computer Engineering student building thoughtful digital experiences.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap"
           rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
@@ -31,12 +34,10 @@
     <nav class="navbar">
 
         <a href="#home" class="logo">
-            &lt;<span>/</span>&gt; ATHARV<span>.</span>
+            A<span class="brand-dot">.</span> / ATHARV
         </a>
 
-        <button class="menu-btn" id="menuBtn">
-            ☰
-        </button>
+        <button class="menu-btn" id="menuBtn" aria-label="Open navigation" aria-controls="navLinks" aria-expanded="false">☰</button>
 
         <ul class="nav-links" id="navLinks">
 
@@ -72,7 +73,7 @@
 
         <div class="nav-actions">
 
-            <button id="themeToggle" class="theme-btn">
+            <button id="themeToggle" class="theme-btn" aria-label="Switch to light mode" title="Switch theme">
                 ☼
             </button>
 
@@ -100,33 +101,32 @@
 
             <div class="availability">
                 <span></span>
-                Available for internships & opportunities
+                Open to internships & collaborations
             </div>
 
             <p class="eyebrow">COMPUTER ENGINEERING · INDIA</p>
             <h1>
-                Crafting digital
-                <strong>experiences.</strong>
-                One idea at a time.
+                Designing for
+                <strong>the curious.</strong>
+                Building for what’s next.
             </h1>
 
             <p class="hero-description">
 
-                Hi, I’m <b>Atharv Bulkunde</b> — a Computer Engineering student who enjoys building websites, exploring UI/UX, and turning curious ideas into useful digital experiences.
+                I’m <b>Atharv Bulkunde</b> — a Computer Engineering student exploring thoughtful interfaces, full-stack development, and useful digital products.
 
             </p>
 
             <div class="hero-buttons">
 
                 <a href="#projects" class="primary-btn">
-                    View My Work ↗
+                    Explore projects ↗
                 </a>
 
                 <a href="https://drive.google.com/file/d/1Yc1od-LKNmgSPpPWsVaQVNDsLCkOGPOh/view?usp=sharing"
-                   class="secondary-btn"
-                   download>
+                   class="secondary-btn" target="_blank" rel="noreferrer">
 
-                    Download Resume ↓
+                    View résumé ↗
 
                 </a>
 
@@ -144,7 +144,7 @@
                     LinkedIn ↗
                 </a>
 
-                <a href="mailto:yourmail@example.com">
+                <a href="https://github.com/AtharvBulkunde">
                     Email ↗
                 </a>
 
@@ -156,7 +156,8 @@
         <!-- PROFILE CARD -->
 
         <div class="hero-profile">
-            <div class="hero-index">PORTFOLIO / 2026 <span>✳</span></div>
+            <div class="hero-index">INDEPENDENT DEVELOPER <span>✳</span></div>
+            <div class="portrait-caption">CURIOUS BY DESIGN<br><b>BUILT TO EXPLORE</b></div>
 
             <div class="orbit orbit-1"></div>
 
@@ -167,7 +168,7 @@
                 <div class="profile-top">
 
                     <span>
-                        DEVELOPER / STUDENT
+                        CREATOR / ENGINEER
                     </span>
 
                     <i></i>
@@ -199,18 +200,12 @@
 
             </div>
 
-            <div class="floating-card card-one">
-                Java
-            </div>
+            <div class="floating-card card-one"><span class="float-icon">✳</span><b>Build</b><small>Code with intent</small></div>
 
-            <div class="floating-card card-two">
-                SQL
-            </div>
+            <div class="floating-card card-two"><span class="float-icon">◌</span><b>Explore</b><small>Ideas into interfaces</small></div>
 
-            <div class="floating-card card-three">
-                <span class="float-dot"></span> Web Dev
-            </div>
-            <div class="floating-card card-four">CREATIVE<br><b>MODE_ON</b></div>
+            <div class="floating-card card-three"><span class="float-dot"></span> Full-stack journey</div>
+            <div class="floating-card card-four">STATUS<br><b>LEARNING / ALWAYS</b></div>
 
         </div>
 
@@ -275,12 +270,12 @@
             <div class="stats-grid">
 
                 <div class="stat">
-                    <strong>10+</strong>
-                    <span>Projects</span>
+                    <strong>Projects</strong>
+                    <span>In progress</span>
                 </div>
 
                 <div class="stat">
-                    <strong>5+</strong>
+                    <strong>Core</strong>
                     <span>Technologies</span>
                 </div>
 
@@ -718,14 +713,12 @@
                     </h3>
 
                     <p>
-                        Add your certificate platform here.
+                        Add a verified certificate link when available.
                     </p>
 
                 </div>
 
-                <a href="#">
-                    ↗
-                </a>
+                <span class="certificate-pending">LINK PENDING</span>
 
             </article>
 
@@ -940,17 +933,17 @@
 
         <div class="footer-links">
 
-            <a href="https://github.com/"
-               target="_blank">
+            <a href="https://github.com/AtharvBulkunde"
+               target="_blank" rel="noreferrer">
                 GitHub
             </a>
 
-            <a href="https://linkedin.com/"
-               target="_blank">
+            <a href="https://www.linkedin.com/in/atharv-bulkunde-2999012a5/"
+               target="_blank" rel="noreferrer">
                 LinkedIn
             </a>
 
-            <a href="mailto:yourmail@example.com">
+            <a href="https://github.com/AtharvBulkunde">
                 Email
             </a>
 
