@@ -75,6 +75,65 @@ window.addEventListener("pointermove", event => {
 const contactForm = document.getElementById("contactForm");
 const formMessage = document.getElementById("formMessage");
 const apiBase = (document.body.dataset.apiBase || "").trim().replace(/\/$/, "");
+
+// Dynamic project list: the HTML cards remain as a graceful fallback if the API is offline.
+async function loadPublicProjects() {
+  const grid = document.getElementById("projectsGrid");
+  if (!apiBase || !grid) return;
+  try {
+    const response = await fetch(apiBase + "/api/projects");
+    if (!response.ok) return;
+    const payload = await response.json();
+    if (!Array.isArray(payload.items) || payload.items.length === 0) return;
+    const palettes = ["blue", "purple", "green"];
+    const makeExternalLink = (label, href) => {
+      if (!href) return null;
+      try { if (new URL(href).protocol !== "https:") return null; } catch { return null; }
+      const a = document.createElement("a");
+      a.href = href;
+      a.target = "_blank";
+      a.rel = "noreferrer";
+      a.textContent = label;
+      return a;
+    };
+    const cards = payload.items.map((project, index) => {
+      const card = document.createElement("article");
+      card.className = "project-card js-reveal is-visible";
+      const image = document.createElement("div");
+      image.className = "project-image " + palettes[index % palettes.length];
+      image.textContent = String(project.title || "PROJECT").toUpperCase();
+      const content = document.createElement("div");
+      content.className = "project-content";
+      const number = document.createElement("small");
+      number.textContent = String(index + 1).padStart(2, "0") + " / " + String(payload.items.length).padStart(2, "0");
+      const title = document.createElement("h3");
+      title.textContent = project.title || "Project";
+      const summary = document.createElement("p");
+      summary.textContent = project.summary || "";
+      const tags = document.createElement("div");
+      tags.className = "tags";
+      (Array.isArray(project.tags) ? project.tags : []).slice(0, 8).forEach(tag => {
+        const pill = document.createElement("span");
+        pill.textContent = tag;
+        tags.append(pill);
+      });
+      const links = document.createElement("div");
+      links.className = "project-links";
+      const sourceLink = makeExternalLink("Source ↗", project.repository);
+      const liveLink = makeExternalLink("Live demo ↗", project.liveUrl);
+      if (sourceLink) links.append(sourceLink);
+      if (liveLink) links.append(liveLink);
+      content.append(number, title, summary, tags, links);
+      card.append(image, content);
+      return card;
+    });
+    grid.replaceChildren(...cards);
+  } catch {
+    // Keep the static cards visible when the API is unavailable.
+  }
+}
+void loadPublicProjects();
+
 contactForm?.addEventListener("submit", async event => {
   event.preventDefault();
   if (!contactForm.reportValidity()) return;
